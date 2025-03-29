@@ -53,3 +53,19 @@ Break this into logical steps like:
 ```bash
 python3 main.py
 
+
+---
+
+### 🧩 **5. How the Pieces Fit Together**
+End with a short explanation or a diagram of the big picture.
+
+```markdown
+## System Layout
+
+The system uses three types of nodes:
+
+- **Ground**: Sends Master assignment via BPSK.
+- **Master**: Sends commands and performs two-tone offset measurements.
+- **Slave**: Echoes dual-tone signals and confirms participation.
+
+
