@@ -33,7 +33,7 @@ The system runs on Raspberry Pis (or similar SBCs), each connected to a LimeSDR,
 
 3. Boot the Raspberry Pi with the flashed SD card.
 
-4. Log in and open a terminal. Most SDR tools (GNU Radio, GQRX, etc.) are already pre-installed.
+4. Log in using default username and password. Most SDR tools (GNU Radio, GQRX, etc.) are already pre-installed.
 
 ---
 
