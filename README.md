@@ -18,7 +18,7 @@ The system runs on Raspberry Pis (or similar SBCs), each connected to a LimeSDR,
 - *[Add more software dependencies here]*
 
 ### 🔩 Hardware
-- 4x Raspberry Pi 4 (or better)
+- 4x Raspberry Pi 4 (or newer)
 - 4x LimeSDR Mini 2.0
 - *[Add additional hardware here]*
 
