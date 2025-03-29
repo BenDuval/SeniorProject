@@ -21,3 +21,19 @@ Or use apt:
 ```bash
 sudo apt update
 sudo apt install gnuradio
+
+
+
+---
+
+### 🔧 **3. Cloning the Project**
+Tell them how to get your files onto their Pi.
+
+```markdown
+## Getting the Project Files
+
+Clone this repository to your local machine:
+
+```bash
+git clone https://github.com/your-username/senior-project.git
+cd senior-project
