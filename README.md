@@ -11,29 +11,29 @@ The system runs on Raspberry Pis (or similar SBCs), each connected to a LimeSDR,
 ## 🛠️ Requirements
 
 ### 🧩 Software
-- Raspberry Pi OS (Debian-based)
-- GNU Radio (3.10+ recommended)
+- **DragonOS Pi64** (recommended OS; includes GNU Radio, GQRX, and other SDR tools pre-installed)  
+  Download: https://sourceforge.net/projects/dragonos-pi64/
 - Python 3.x
 - ZMQ, NumPy, SciPy
 - *[Add more software dependencies here]*
 
 ### 🔩 Hardware
-- 4x Raspberry Pi 4 (or newer)
+- 4x Raspberry Pi 4 (or better)
 - 4x LimeSDR Mini 2.0
 - *[Add additional hardware here]*
 
 ---
 
-## 📦 Installing GNU Radio
+## 📦 Setting Up DragonOS
 
-Follow the official installation guide: [GNU Radio Install Guide](https://wiki.gnuradio.org/index.php/InstallingGR)
+1. Download DragonOS Pi64 image:  
+   https://sourceforge.net/projects/dragonos-pi64/
 
-Or use apt:
+2. Flash it to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/) or [balenaEtcher](https://www.balena.io/etcher/)
 
-```bash
-sudo apt update
-sudo apt install gnuradio
-```
+3. Boot the Raspberry Pi with the flashed SD card.
+
+4. Log in and open a terminal. Most SDR tools (GNU Radio, GQRX, etc.) are already pre-installed.
 
 ---
 
@@ -51,7 +51,7 @@ cd senior-project
 ## ▶️ Running the System
 
 1. Boot up Raspberry Pi with LimeSDR attached.
-2. Ensure GNU Radio is installed and working.
+2. Ensure DragonOS is running and GNU Radio is working.
 3. Navigate to `ground_station/` to start the Ground node:
 
 ```bash
@@ -69,5 +69,6 @@ The system uses three types of nodes:
 - **Slave**: Echoes dual-tone signals and confirms participation.
 
 Each node communicates using RF at 430 MHz (TX) and 435 MHz (RX), and coordination is handled using ZMQ signaling between scripts.
+
 
 
