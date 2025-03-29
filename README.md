@@ -23,9 +23,6 @@ sudo apt update
 sudo apt install gnuradio
 
 
-
----
-
 ### 🔧 **3. Cloning the Project**
 Tell them how to get your files onto their Pi.
 
