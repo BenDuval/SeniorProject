@@ -37,3 +37,19 @@ Clone this repository to your local machine:
 ```bash
 git clone https://github.com/your-username/senior-project.git
 cd senior-project
+
+
+---
+
+### ▶️ **4. Running the System**
+Break this into logical steps like:
+
+```markdown
+## Running the System
+
+1. Boot up Raspberry Pi with LimeSDR attached.
+2. Ensure GNU Radio is installed and working.
+3. Navigate to `ground_station/` to start the Ground node:
+```bash
+python3 main.py
+
