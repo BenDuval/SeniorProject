@@ -10,10 +10,17 @@ The system runs on Raspberry Pis (or similar SBCs), each connected to a LimeSDR,
 
 ## 🛠️ Requirements
 
+### 🧩 Software
 - Raspberry Pi OS (Debian-based)
 - GNU Radio (3.10+ recommended)
 - Python 3.x
 - ZMQ, NumPy, SciPy
+- *[Add more software dependencies here]*
+
+### 🔩 Hardware
+- 4x Raspberry Pi 4 (or better)
+- 4x LimeSDR Mini 2.0
+- *[Add additional hardware here]*
 
 ---
 
