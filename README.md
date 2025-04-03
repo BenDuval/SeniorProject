@@ -11,7 +11,7 @@ The system runs on Raspberry Pis each connected to a LimeSDR, and leverages GNU 
 ## 🛠️ Requirements
 
 ### 🧩 Software
-- **DragonOS Pi64** (recommended OS; includes GNU Radio, GQRX, and other SDR tools pre-installed)  
+- **DragonOS Pi64** (recommended OS; includes GNU Radio and other necessary libraries) 
   Download: https://sourceforge.net/projects/dragonos-pi64/
 - Python 3.x
 - ZMQ, NumPy, SciPy
