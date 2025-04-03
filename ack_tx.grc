@@ -145,26 +145,6 @@ blocks:
     coordinate: [600, 280.0]
     rotation: 0
     state: enabled
-- name: blocks_delay_0
-  id: blocks_delay
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    delay: '1000000'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_ports: '1'
-    showports: 'False'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [744, 356.0]
-    rotation: 0
-    state: disabled
 - name: epy_block_0
   id: epy_block
   parameters:
@@ -342,26 +322,12 @@ blocks:
     coordinate: [952, 240.0]
     rotation: 0
     state: enabled
-- name: virtual_sink_0
-  id: virtual_sink
-  parameters:
-    alias: ''
-    comment: ''
-    stream_id: LimeSDR
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [896, 420.0]
-    rotation: 0
-    state: disabled
 
 connections:
 - [analog_sig_source_x_0, '0', epy_block_0, '0']
 - [analog_sig_source_x_0_0, '0', epy_block_0_0, '0']
 - [blocks_add_xx_0, '0', qtgui_freq_sink_x_1, '0']
 - [blocks_add_xx_0, '0', soapy_limesdr_sink_0, '0']
-- [blocks_delay_0, '0', virtual_sink_0, '0']
 - [epy_block_0, '0', blocks_add_xx_0, '0']
 - [epy_block_0_0, '0', blocks_add_xx_0, '1']
 
