@@ -57,13 +57,14 @@ cd SeniorProject
 
 Before running the full protocol, perform an initial setup test to ensure your nodes are functioning properly.   
 
-1. Boot up Raspberry Pi with LimeSDR attached.
-2. Ensure DragonOS is running and GNU Radio is working.
-3. Navigate to `ground_station/` to start the Ground node:
-
+### 🔧 Initial Node Test   
+1. Boot into DragonOS on each node device.
+2. Ensure the LimeSDR is powered on and recognized.
+3. Navigate to the cloned project folder:
 ```bash
-python3 main.py
+cd ~/Documents/Senior\ Project/Communication\ Protocol/SeniorProject
 ```
+
 
 ---
 
