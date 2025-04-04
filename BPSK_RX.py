@@ -180,7 +180,7 @@ class BPSK_RX(gr.top_block, Qt.QWidget):
           1, '')
         self.digital_constellation_decoder_cb_0 = digital.constellation_decoder_cb(BPSK)
         self.blocks_repack_bits_bb_0 = blocks.repack_bits_bb(1, 8, "", False, gr.GR_MSB_FIRST)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/ubuntu/Documents/Senior Project/Communication Protocol/out.txt', False)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/out.txt', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.analog_agc_xx_0 = analog.agc_cc((1e-4), 1.0, 1.0, 8)
 
