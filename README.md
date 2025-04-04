@@ -52,10 +52,18 @@ cd SeniorProject
 ```
 
 ---
-
 ## ▶️ Running the System
 
 Before running the full protocol, perform an initial setup test to ensure your nodes are functioning properly.   
+
+### 🔌 LimeSDR Detection Test   
+Run ( With LimeSDR mini 2.0 powered on):  
+
+```bash
+LimeUtil --find
+```
+
+That should have returned an output showing a sucessful detection of the LimeSDR connected to the Rasberry Pi.   
 
 ### 🔧 Initial Node Test   
 1. Boot into DragonOS on each node device.
@@ -64,7 +72,10 @@ Before running the full protocol, perform an initial setup test to ensure your n
 ```bash
 cd ~/Documents/Senior\ Project/Communication\ Protocol/SeniorProject
 ```
-
+Rename NodeG to match the node device you are using, EX on the pi responsible for Node1, rename nodeG to node1.py, same for node2, and node3.   
+```bash
+python3 nodeG.py
+```
 
 ---
 
