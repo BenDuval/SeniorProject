@@ -44,8 +44,11 @@ The system runs on Raspberry Pis each connected to a LimeSDR, and leverages GNU 
 Clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/senior-project.git
-cd senior-project
+cd ~/Documents
+mkdir -p "Senior Project/Communication Protocol"
+cd "Senior Project/Communication Protocol"   
+git clone https://github.com/BenDuval/SeniorProject.git   
+cd SeniorProject   
 ```
 
 ---
