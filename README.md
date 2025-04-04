@@ -110,4 +110,7 @@ The system uses three types of nodes:
 Each node communicates using RF at XXX MHz (TX) and XXX MHz (RX), and coordination is handled using ZMQ signaling between scripts.
 
 
+## 🚀 Full System Operation (Coming Soon)
+
+Once all nodes are running and idle, Ground can initiate the first Master assignment using BPSK. This begins the round of master-slave interactions and data collection. See `become_master()` in the source for details.
 
