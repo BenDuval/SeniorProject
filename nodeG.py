@@ -17,12 +17,12 @@ class AirNode:
         print("State changed to: idle")
         
         # Step 1: Clear command.txt or reset it
-        try:
-            with open("command.txt", "w") as f:
-                f.write("")
-            print("command.txt cleared.")
-        except Exception as e:
-            print(f"Error clearing command.txt: {e}")        
+        #try:
+         #   with open("command.txt", "w") as f:
+         #       f.write("")
+         #   print("command.txt cleared.")
+        #except Exception as e:
+         #   print(f"Error clearing command.txt: {e}")        
         
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
@@ -168,7 +168,7 @@ class AirNode:
 
 
 
-    def fuzzy_match(word, valid_set, cutoff=0.7):
+    def fuzzy_match(self, word, valid_set, cutoff=0.7):
         """Returns closest match in valid_set if above cutoff score."""
         match = difflib.get_close_matches(word, valid_set, n=1, cutoff=cutoff)
         return match[0] if match else None
@@ -188,12 +188,15 @@ class AirNode:
             source = lines[2]
 
             # Fuzzy match command
-            command = fuzzy_match(raw_command, VALID_COMMANDS)
+            command = self.fuzzy_match(raw_command, VALID_COMMANDS)
             if not command:
                 return None, None, None  # Could not confidently parse command
             return command, identifier, source
         except FileNotFoundError:
             return None, None, None
+
+
+
 
     def process_command(self, command, identifier, source):
         """Processes commands and includes the source information."""
