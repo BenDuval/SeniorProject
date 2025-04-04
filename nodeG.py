@@ -101,6 +101,7 @@ class AirNode:
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
         time.sleep(20)
         ack_process.terminate()
+        time.sleep(.3)
         slave_process = subprocess.Popen(["python3", "two_tone_slave.py"])  # Start two_tone_slave.py
         slave_process.wait()  # Properly terminate the slave_process
         self.return_to_idle()
