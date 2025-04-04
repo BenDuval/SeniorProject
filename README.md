@@ -55,6 +55,8 @@ cd SeniorProject
 
 ## ▶️ Running the System
 
+Before running the full protocol, perform an initial setup test to ensure your nodes are functioning properly.   
+
 1. Boot up Raspberry Pi with LimeSDR attached.
 2. Ensure DragonOS is running and GNU Radio is working.
 3. Navigate to `ground_station/` to start the Ground node:
@@ -73,7 +75,7 @@ The system uses three types of nodes:
 - **Master**: Sends commands and performs two-tone offset measurements.
 - **Slave**: Echoes dual-tone signals and confirms participation.
 
-Each node communicates using RF at 430 MHz (TX) and 435 MHz (RX), and coordination is handled using ZMQ signaling between scripts.
+Each node communicates using RF at XXX MHz (TX) and XXX MHz (RX), and coordination is handled using ZMQ signaling between scripts.
 
 
 
