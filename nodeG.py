@@ -173,7 +173,7 @@ class AirNode:
         match = difflib.get_close_matches(word, valid_set, n=1, cutoff=cutoff)
         return match[0] if match else None
 
-    def read_command_from_file(path="command.txt"):
+    def read_command_from_file(self, path="command.txt"):
         """Reads the command file and extracts destination, command, and source."""
         VALID_COMMANDS = {"Master", "Slave", "Idle"}
         try:
