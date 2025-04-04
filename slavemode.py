@@ -119,7 +119,6 @@ try:
             f.write(f"{sample.real:.6f} {sample.imag:.6f}\n")  # Save in ASCII format
 
         # Append recorded timestamps and frequency analysis
-        f.write(f"\n# Two-Tone Originally Transmitted at: {transmission_time:.6f} seconds since epoch\n")
         f.write(f"# Two-Tone Detected at: {detection_time:.6f} seconds since epoch\n")
         f.write(f"# Detected Baseband Frequencies: {detected_freqs[0]:.2f} Hz, {detected_freqs[1]:.2f} Hz\n")
         f.write(f"# Expected Baseband Frequencies: {expected_tones[0]:.2f} Hz, {expected_tones[1]:.2f} Hz\n")
