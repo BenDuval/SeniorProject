@@ -90,7 +90,33 @@ class AirNode:
             time.sleep(.3)
             master_process.wait()  # Waits for script to finish 
             print("master mode finished")
+            time.sleep(.3)
+            # Step 5: Get master’s collected file
+          #  master_files = [f for f in os.listdir() if f.startswith("collected_data_") and f.endswith(".txt")]
+          #  master_latest = max(master_files, key=os.path.getctime)
+            # Step 6 Wait for slave’s BPSK transmission
+           # print("Waiting to receive data from slave...")
+           # rx_process = subprocess.Popen(["python3", "BPSK_RX.py"])
+           # time.sleep(8)  # Adjust as needed for reliable reception
+           # rx_process.terminate()
+           # print("Received data from slave.")
+            # Step 7: Combine both into session log
+           # session_log = f"session_log_{node}.txt"  # `node` is the slave being processed
+           # with open(session_log, "w") as f_log:
+            #    f_log.write(f"===== Master Data ({self.identifier}) =====\n")
+             #   with open(master_latest, "r") as f_master:
+                #    f_log.write(f_master.read())
+               # f_log.write(f"\n\n===== Slave Data ({node}) =====\n")
+              #  with open("out.txt", "r") as f_slave:
+             #       f_log.write(f_slave.read())
+            #print(f"Combined session data written to {session_log}")
+            #os.remove("out.txt")
+            #print("out.txt file erased")
+            #os.remove(master_latest)
+            #print("erased lastest master collected data")
 
+
+    
             # Step 5: Transmit to ground
 
 
