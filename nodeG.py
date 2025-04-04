@@ -97,13 +97,27 @@ class AirNode:
     def become_slave(self):
         """Handles Slave node setup."""
         time.sleep(.3)
+        # Step 1: Send ack to master 
         print(f"{self.identifier} is now a Slave. Sending ACK...")
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-        time.sleep(20)
+        time.sleep(20) # wait 20 seconds
         ack_process.terminate()
         time.sleep(.3)
-        slave_process = subprocess.Popen(["python3", "two_tone_slave.py"])  # Start two_tone_slave.py
+        # Step 2: Start two_tone_slave.py
+        slave_process = subprocess.Popen(["python3", "two_tone_slave.py"])  
         slave_process.wait()  # Properly terminate the slave_process
+        # Step 3: Find latest collected data file
+        files = [f for f in os.listdir() if f.startswith("collected_data_") and f.endswith(".txt")]
+        latest_file = max(files, key=os.path.getctime)
+        # Step 4: Copy to command.txt
+        with open(latest_file, "r") as f_src:
+            contents = f_src.read()
+        with open("command.txt", "w") as f_dest:
+            f_dest.write(contents)
+        print("Prepared data file for transmission to master.")
+        # Step 5: Transmit using BPSK_TX
+        subprocess.run(["python3", "BPSK_TX.py"])
+        print("Slave data transmitted to master.")
         self.return_to_idle()
 
     def read_command_from_file(self, path="command.txt"):
