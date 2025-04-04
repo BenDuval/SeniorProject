@@ -1,6 +1,8 @@
 import time
 import subprocess
 import zmq
+import os
+import difflib
 from set_command import set_command
 from extract_command import extract_command
 
@@ -15,12 +17,12 @@ class AirNode:
         print("State changed to: idle")
         
         # Step 1: Clear command.txt or reset it
-        #try:
-         #   with open("command.txt", "w") as f:
-          #      f.write("")
-           # print("command.txt cleared.")
-        #except Exception as e:
-         #   print(f"Error clearing command.txt: {e}")        
+        try:
+            with open("command.txt", "w") as f:
+                f.write("")
+            print("command.txt cleared.")
+        except Exception as e:
+            print(f"Error clearing command.txt: {e}")        
         
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
@@ -146,23 +148,55 @@ class AirNode:
         print("Slave data transmitted to master.")
         self.return_to_idle()
 
-    def read_command_from_file(self, path="command.txt"):
-        """Reads the command file and extracts destination, command, and source."""
-        try:
-            with open(path, 'r') as file:
-                lines = file.readlines()
-                if len(lines) < 3:
-                    raise IndexError  # Ensure all three lines exist
-                identifier = lines[0].strip()  # Destination Node
-                command = lines[1].strip()  # Command Type
-                source = lines[2].strip()  # Source Node
-                return command, identifier, source
-        except FileNotFoundError:
+   # def read_command_from_file(self, path="command.txt"):
+     #   """Reads the command file and extracts destination, command, and source."""
+    #    try:
+     #       with open(path, 'r') as file:
+     #           lines = file.readlines()
+     #           if len(lines) < 3:
+     #               raise IndexError  # Ensure all three lines exist
+     #           identifier = lines[0].strip()  # Destination Node
+     #           command = lines[1].strip()  # Command Type
+     #           source = lines[2].strip()  # Source Node
+     #           return command, identifier, source
+     #   except FileNotFoundError:
             #print("File not found. Ensure 'command.txt' is available.")
-            return None, None, None
-        except IndexError:
+     #       return None, None, None
+     #   except IndexError:
             #print("File format error. Ensure the file contains three lines: Destination, Command, and Source.")
-            return None, None, None
+         #   return None, None, None
+
+
+
+        def fuzzy_match(word, valid_set, cutoff=0.7):
+            """Returns closest match in valid_set if above cutoff score."""
+            match = difflib.get_close_matches(word, valid_set, n=1, cutoff=cutoff)
+            return match[0] if match else None
+
+        def read_command_from_file(path="command.txt"):
+            """Reads the command file and extracts destination, command, and source."""
+            VALID_COMMANDS = {"Master", "Slave", "Idle"}
+            try:
+                with open(path, 'r') as file:
+                    lines = [line.strip() for line in file if line.strip()]
+        
+                if len(lines) < 3:
+                    return None, None, None
+
+                identifier = lines[0]
+                raw_command = lines[1]
+                source = lines[2]
+
+                # Fuzzy match command
+                command = fuzzy_match(raw_command, VALID_COMMANDS)
+                if not command:
+                    return None, None, None  # Could not confidently parse command
+                return command, identifier, source
+            except FileNotFoundError:
+                return None, None, None
+
+
+
 
     def process_command(self, command, identifier, source):
         """Processes commands and includes the source information."""
@@ -180,4 +214,3 @@ class AirNode:
 if __name__ == "__main__":
     node = AirNode("Node1")
     node.return_to_idle()  # Start in IDLE State
-
