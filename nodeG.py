@@ -29,9 +29,13 @@ class AirNode:
          self.bpsk_rx_process = subprocess.Popen(["python3", "/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/BPSK_RX.py"])
         print("started bpsk rx")
         time.sleep(4)
+        
+        input_file_path = 'out.txt'
+        output_file_path = 'command.txt'
+
         # Step 3: Idle polling loop
         while self.state == 'idle':
-            #extract_command()
+            extract_command(input_path, output_path)
             command, identifier, source = self.read_command_from_file()
             if command and identifier and source and identifier == self.identifier:
                 print("Command found in idle. Exiting idle and processing.")
