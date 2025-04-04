@@ -317,7 +317,7 @@ class BPSK_TX(gr.top_block, Qt.QWidget):
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.epy_block_0_0_0 = epy_block_0_0_0.blk(threshold=.01, zmq_port=4010)
         self.epy_block_0_0 = epy_block_0_0.preamble_inserter(preamble=0xAAAAAAAAAAAAAAAA, pkt_len=64)
-        self.epy_block_0 = epy_block_0.repeat_packet_file_source(file_path="/home/ubuntu/Documents/Senior Project/Communication Protocol/command.txt", num_repeats=25000)
+        self.epy_block_0 = epy_block_0.repeat_packet_file_source(file_path="/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/command.txt", num_repeats=25000)
         self.digital_protocol_formatter_bb_0 = digital.protocol_formatter_bb(hdr_format, "packet_len")
         self.digital_constellation_modulator_0 = digital.generic_mod(
             constellation=BPSK,
