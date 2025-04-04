@@ -57,26 +57,45 @@ cd SeniorProject
 Before running the full protocol, perform an initial setup test to ensure your nodes are functioning properly.   
 
 ### 🔌 LimeSDR Detection Test   
-Run ( With LimeSDR mini 2.0 powered on):  
+Make sure your LimeSDR Mini 2.0 is powered on. Then run the following command on each Raspberry Pi:    
 
 ```bash
 LimeUtil --find
 ```
 
-That should have returned an output showing a sucessful detection of the LimeSDR connected to the Rasberry Pi.   
+You should see an output indicating that the LimeSDR was detected. If not, check power and USB connection.   
 
 ### 🔧 Initial Node Test   
 1. Boot into DragonOS on each node device.
-2. Ensure the LimeSDR is powered on and recognized.
+2. Ensure the LimeSDR is powered on and recognized (see above).
 3. Navigate to the cloned project folder:
 ```bash
 cd ~/Documents/Senior\ Project/Communication\ Protocol/SeniorProject
 ```
-Rename NodeG to match the node device you are using, EX on the pi responsible for Node1, rename nodeG to node1.py, same for node2, and node3.   
-```bash
-python3 nodeG.py
-```
+### 🖥️ Node Script Naming   
 
+Rename `nodeG.py` to match the node device it will be running on. This helps organize roles clearly during testing and deployment.   
+
+For example:   
+
+```bash
+# On the device acting as Node1
+mv nodeG.py node1.py
+
+# On Node2's device
+mv nodeG.py node2.py
+
+# And so on for Node3
+```
+Then run the script like this:   
+
+```bash
+python3 node1.py
+```
+Make sure the identifier inside the script matches the role:   
+```bash
+self.identifier = "Node1"  # or "Node2", "Node3"
+```
 ---
 
 ## 🧩 System Layout
