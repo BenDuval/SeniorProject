@@ -31,7 +31,7 @@ The system runs on Raspberry Pis each connected to a LimeSDR, and leverages GNU 
 1. Download DragonOS Pi64 image:  
    https://sourceforge.net/projects/dragonos-pi64/
 
-2. Flash it to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/) or [balenaEtcher](https://www.balena.io/etcher/)
+2. Flash it to a microSD card using [Raspberry Pi Imager](https://www.raspberrypi.com/software/)   
 
 3. Boot the Raspberry Pi with the flashed SD card.
 
