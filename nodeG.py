@@ -24,7 +24,7 @@ class AirNode:
         
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
-         self.bpsk_rx_process = subprocess.Popen(["python3", "/home/ubuntu/Documents/Senior Project/Communication Protocol/BPSK_RX.py"])
+         self.bpsk_rx_process = subprocess.Popen(["python3", "/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/BPSK_RX.py"])
         print("started bpsk rx")
         time.sleep(4)
         # Step 3: Idle polling loop
