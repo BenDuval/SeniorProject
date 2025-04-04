@@ -35,7 +35,7 @@ The system runs on Raspberry Pis each connected to a LimeSDR, and leverages GNU 
 
 3. Boot the Raspberry Pi with the flashed SD card.
 
-4. Log in using default username and password. Most SDR tools (GNU Radio, GQRX, etc.) are already pre-installed.
+4. Log in using default username and password. For DragonOS, the default username is 'ubuntu' and default password is 'dragon'. Most SDR tools (GNU Radio, GQRX, etc.) are already pre-installed.
 
 ---
 
