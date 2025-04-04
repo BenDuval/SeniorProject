@@ -8,7 +8,7 @@ class repeat_packet_file_source(gr.sync_block):
     and transmits the packet as a stream of bytes, repeated X times.
     """
 
-    def __init__(self, file_path="/home/ubuntu/Documents/Senior Project/Communication Protocol/test.txt", num_repeats=3):
+    def __init__(self, file_path="/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/command.txt", num_repeats=3):
         gr.sync_block.__init__(
             self,
             name="Repeat Packet File Source",  # Block name
