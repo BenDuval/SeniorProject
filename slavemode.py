@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # ---- Path to Flowgraph ----
-flowgraph_path = "/home/ubuntu/Documents/Senior Project/Communication Protocol/two_tone_slave.py"
+flowgraph_path = "/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/two_tone_slave.py"
 
 # ---- Start the GRC Flowgraph ----
 first_process = subprocess.Popen(['python3', flowgraph_path])
