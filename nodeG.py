@@ -168,35 +168,32 @@ class AirNode:
 
 
 
-        def fuzzy_match(word, valid_set, cutoff=0.7):
-            """Returns closest match in valid_set if above cutoff score."""
-            match = difflib.get_close_matches(word, valid_set, n=1, cutoff=cutoff)
-            return match[0] if match else None
+    def fuzzy_match(word, valid_set, cutoff=0.7):
+        """Returns closest match in valid_set if above cutoff score."""
+        match = difflib.get_close_matches(word, valid_set, n=1, cutoff=cutoff)
+        return match[0] if match else None
 
-        def read_command_from_file(path="command.txt"):
-            """Reads the command file and extracts destination, command, and source."""
-            VALID_COMMANDS = {"Master", "Slave", "Idle"}
-            try:
-                with open(path, 'r') as file:
-                    lines = [line.strip() for line in file if line.strip()]
+    def read_command_from_file(path="command.txt"):
+        """Reads the command file and extracts destination, command, and source."""
+        VALID_COMMANDS = {"Master", "Slave", "Idle"}
+        try:
+            with open(path, 'r') as file:
+                lines = [line.strip() for line in file if line.strip()]
         
-                if len(lines) < 3:
-                    return None, None, None
-
-                identifier = lines[0]
-                raw_command = lines[1]
-                source = lines[2]
-
-                # Fuzzy match command
-                command = fuzzy_match(raw_command, VALID_COMMANDS)
-                if not command:
-                    return None, None, None  # Could not confidently parse command
-                return command, identifier, source
-            except FileNotFoundError:
+            if len(lines) < 3:
                 return None, None, None
 
+            identifier = lines[0]
+            raw_command = lines[1]
+            source = lines[2]
 
-
+            # Fuzzy match command
+            command = fuzzy_match(raw_command, VALID_COMMANDS)
+            if not command:
+                return None, None, None  # Could not confidently parse command
+            return command, identifier, source
+        except FileNotFoundError:
+            return None, None, None
 
     def process_command(self, command, identifier, source):
         """Processes commands and includes the source information."""
