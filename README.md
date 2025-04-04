@@ -92,7 +92,7 @@ Then run the script like this:
 ```bash
 python3 node1.py
 ```
-Make sure the identifier inside the script matches the role:   
+Make sure the identifier inside the script matches the role(Can be found very bottom of the node.py scripts):   
 ```bash
 self.identifier = "Node1"  # or "Node2", "Node3"
 ```
