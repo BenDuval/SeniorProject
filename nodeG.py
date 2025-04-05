@@ -35,7 +35,7 @@ class AirNode:
 
         # Step 3: Idle polling loop
         while self.state == 'idle':
-            extract_command(input_path, output_path)
+            extract_command(input_file_path, output_file_path)
             command, identifier, source = self.read_command_from_file()
             if command and identifier and source and identifier == self.identifier:
                 print("Command found in idle. Exiting idle and processing.")
@@ -93,16 +93,13 @@ class AirNode:
             # Step 4: Launch master_mode to handle two-tone TX and RX
             print("master mode up next")
             master_process = subprocess.run(["python3", "master_mode.py"])
-            time.sleep(.3)
-            master_process.wait()  # Waits for script to finish 
-            print("master mode finished")
-            time.sleep(.3)
+            time.sleep(2000)
             # Step 5: Get master’s collected file
-          #  master_files = [f for f in os.listdir() if f.startswith("collected_data_") and f.endswith(".txt")]
-          #  master_latest = max(master_files, key=os.path.getctime)
+            #master_files = [f for f in os.listdir() if f.startswith("collected_data_") and f.endswith(".txt")]
+            #master_latest = max(master_files, key=os.path.getctime)
             # Step 6 Wait for slave’s BPSK transmission
-           # print("Waiting to receive data from slave...")
-           # rx_process = subprocess.Popen(["python3", "BPSK_RX.py"])
+            #print("Waiting to receive data from slave...")
+            #rx_process = subprocess.Popen(["python3", "BPSK_RX.py"])
            # time.sleep(8)  # Adjust as needed for reliable reception
            # rx_process.terminate()
            # print("Received data from slave.")
