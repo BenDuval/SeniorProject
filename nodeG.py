@@ -135,8 +135,8 @@ class AirNode:
         time.sleep(20) # wait 20 seconds
         ack_process.terminate()
         time.sleep(.3)
-        # Step 2: Start two_tone_slave.py
-        slave_process = subprocess.Popen(["python3", "two_tone_slave.py"])  
+        # Step 2: Start slavemode.py
+        slave_process = subprocess.Popen(["python3", "slavemode.py"])  
         slave_process.wait()  # Properly terminate the slave_process
         # Step 3: Find latest collected data file
         files = [f for f in os.listdir() if f.startswith("collected_data_") and f.endswith(".txt")]
