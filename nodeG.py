@@ -5,6 +5,7 @@ import os
 import difflib
 from set_command import set_command
 from extract_command import extract_command
+#from extract_valid_command_from_file_stream import extract_valid_command_from_file_stream
 
 class AirNode:
     def __init__(self, identifier):
@@ -37,6 +38,7 @@ class AirNode:
         while self.state == 'idle':
             extract_command(input_file_path, output_file_path)
             command, identifier, source = self.read_command_from_file()
+            
             if command and identifier and source and identifier == self.identifier:
                 print("Command found in idle. Exiting idle and processing.")
                 self.process_command(command, identifier, source)
