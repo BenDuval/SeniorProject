@@ -60,6 +60,8 @@ class AirNode:
             
     def become_master(self):
         """Handles Master node setup and starts transmission."""
+        ack_process = subprocess.Popen(["python3", "ack_tx.py"])
+        time.sleep(3) # wait 3 seconds
         air_nodes = ["Node1", "Node2", "Node3"]  # All known nodes
         for node in air_nodes:
             if node == self.identifier:
@@ -131,7 +133,7 @@ class AirNode:
         # Step 1: Send ack to master 
         print(f"{self.identifier} is now a Slave. Sending ACK...")
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-        time.sleep(20) # wait 20 seconds
+        time.sleep(3) # wait 3 seconds
         ack_process.terminate()
         time.sleep(.3)
         # Step 2: Start slavemode.py
