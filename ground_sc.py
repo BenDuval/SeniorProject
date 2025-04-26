@@ -80,10 +80,14 @@ def run_bpsk_rx_until_2_eof(output_filename):
     print("🛑 BPSK_RX terminated after detecting 2 EOF_MARKERs.")
     extract_valid_transmission("out.txt", output_filename)
     print(f"📁 Extracted middle transmission saved to {output_filename}")
+    send_ack()
 
 
 def send_ack():
-    subprocess.run(["python3", "ack_tx.py"])
+    ack_proc = subprocess.Popen(["python3", "ack_tx.py"])
+    time.sleep(3)
+    ack_proc.terminate()
+    ack_proc.wait()
     print("📡 Sent ACK back to Master.")
 
 
@@ -117,9 +121,6 @@ def main():
             time.sleep(1)  # Small pause before second capture
             slave2 = slave_targets[1]
             run_bpsk_rx_until_2_eof(f"{master}{slave2}.txt")
-
-            # Step 6: Send ACK back to Master
-            send_ack()
 
         except Exception as e:
             print(f"❌ Error during subprocess execution: {e}")
