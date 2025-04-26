@@ -6,22 +6,15 @@ import os
 # === Node Configuration ===
 nodes = ["Node1", "Node2", "Node3"]
 
-# Expected output files from communication cycles
-required_files = {
-    "Node1Node2", "Node1Node3",
-    "Node2Node1", "Node2Node3",
-    "Node3Node1", "Node3Node2"
-}
+ZMQ_ACK_PORT = 4010  # Must match your BPSK_TX.grc setup
 
-ZMQ_ACK_PORT = 4010  # Must match custom python block setup in BPSK_TX.grc
 
 def write_command_file(destination: str, command: str, source: str):
-    """Generate the 3-line command.txt file"""
     with open("command.txt", "w") as f:
         f.write(f"{destination}\n{command}\n{source}")
 
+
 def wait_for_ack_zmq():
-    """Wait for tone detection via ZMQ port (indicating ACK)"""
     ctx = zmq.Context()
     socket = ctx.socket(zmq.SUB)
     socket.connect(f"tcp://localhost:{ZMQ_ACK_PORT}")
@@ -31,51 +24,109 @@ def wait_for_ack_zmq():
     while True:
         try:
             msg = socket.recv_string(flags=zmq.NOBLOCK)
-            print(f"[ZMQ] Received: {msg}")
             if msg.strip() == "1":
                 print("✅ ACK Detected.")
                 break
         except zmq.Again:
             time.sleep(0.1)
 
-def wait_until_all_data_files_exist(expected_set):
-    """Block until all 6 expected directional data files are present"""
-    print("🟡 Waiting for all 6 data files...")
-    existing = set()
-    while existing != expected_set:
-        for name in expected_set - existing:
-            if os.path.exists(f"{name}.txt"):
-                print(f"✔ File detected: {name}.txt")
-                existing.add(name)
+
+def wait_for_2_eof_markers(file_path="out.txt"):
+    print(f"⏳ Waiting for 2 EOF_MARKERs in {file_path}...")
+    while True:
+        try:
+            with open(file_path, "rb") as f:
+                content = f.read()
+                if content.count(b"EOF_MARKER") >= 2:
+                    print("✅ 2 EOF_MARKERs detected.")
+                    break
+        except FileNotFoundError:
+            pass
         time.sleep(0.5)
 
-# === Main Ground Station Loop ===
-for master in nodes:
-    print(f"\n==============================")
-    print(f"🎯 Assigning Master: {master}")
-    print(f"==============================")
 
-    write_command_file(master, "Master", "NodeG")
+def extract_valid_transmission(input_file: str, output_file: str, pad_char: str = 'A', min_pad_length: int = 10):
+    """
+    Extracts the middle (valid) transmission from a file with three padded transmissions.
 
-    try:
-        tx_proc = subprocess.Popen(["python3", "BPSK_TX.py"])
-        wait_for_ack_zmq()
-        tx_proc.terminate()
-        tx_proc.wait()
-        print("🛑 TX terminated. Starting RX...")
+    Args:
+        input_file (str): Path to the input file containing three padded transmissions.
+        output_file (str): Path to the output file where the valid middle transmission will be saved.
+        pad_char (str): The character used for padding. Default is 'A'.
+        min_pad_length (int): Minimum number of padding characters to identify split points. Default is 10.
+    """
+    with open(input_file, 'r') as f:
+        content = f.read()
 
-        rx_proc = subprocess.Popen(["python3", "BPSK_RX.py"])
-        wait_until_all_data_files_exist(required_files)
-        rx_proc.terminate()
-        rx_proc.wait()
-        print("✅ RX complete. Moving to next node.\n")
+    segments = content.split(pad_char * min_pad_length)
+    cleaned_segments = [s.strip() for s in segments if s.strip()]
 
-    except Exception as e:
-        print(f"❌ Error during subprocess execution: {e}")
-        if 'tx_proc' in locals():
+    if len(cleaned_segments) < 3:
+        raise ValueError("Expected at least three transmissions (padded start, middle, end).")
+
+    middle_transmission = cleaned_segments[1]
+
+    with open(output_file, 'w') as f:
+        f.write(middle_transmission)
+
+
+def run_bpsk_rx_until_2_eof(output_filename):
+    rx_proc = subprocess.Popen(["python3", "BPSK_RX.py"])
+    wait_for_2_eof_markers()
+    rx_proc.terminate()
+    rx_proc.wait()
+    print("🛑 BPSK_RX terminated after detecting 2 EOF_MARKERs.")
+    extract_valid_transmission("out.txt", output_filename)
+    print(f"📁 Extracted middle transmission saved to {output_filename}")
+
+
+def send_ack():
+    subprocess.run(["python3", "ack_tx.py"])
+    print("📡 Sent ACK back to Master.")
+
+
+def main():
+    # === Main Ground Station Loop ===
+    for master in nodes:
+        print(f"\n==============================")
+        print(f"🎯 Assigning Master: {master}")
+        print(f"==============================")
+
+        # Step 1: Write Master command
+        write_command_file(master, "Master", "NodeG")
+
+        try:
+            # Step 2: Transmit command to Master
+            tx_proc = subprocess.Popen(["python3", "BPSK_TX.py"])
+            wait_for_ack_zmq()
             tx_proc.terminate()
-        if 'rx_proc' in locals():
-            rx_proc.terminate()
-        break
+            tx_proc.wait()
+            print("🛑 TX terminated after ACK.")
 
-print("🎉 All Master cycles completed successfully.")
+            # Step 3: Pause briefly before RX
+            time.sleep(3)
+
+            # Step 4: RX for first Slave
+            slave_targets = [node for node in nodes if node != master]
+            slave1 = slave_targets[0]
+            run_bpsk_rx_until_2_eof(f"{master}{slave1}.txt")
+
+            # Step 5: RX for second Slave
+            time.sleep(1)  # Small pause before second capture
+            slave2 = slave_targets[1]
+            run_bpsk_rx_until_2_eof(f"{master}{slave2}.txt")
+
+            # Step 6: Send ACK back to Master
+            send_ack()
+
+        except Exception as e:
+            print(f"❌ Error during subprocess execution: {e}")
+            if 'tx_proc' in locals():
+                tx_proc.terminate()
+            break
+
+    print("🎉 All Master cycles completed successfully.")
+
+
+if __name__ == "__main__":
+    main()
