@@ -37,7 +37,9 @@ def wait_for_2_eof_markers(file_path="out.txt"):
         try:
             with open(file_path, "rb") as f:
                 content = f.read()
-                if content.count(b"EOF_MARKER") >= 2:
+                eof_count = content.count(b"EOF_MARKER")
+                print(f"🔎 Current EOF_MARKER count: {eof_count}")
+                if eof_count >= 2:
                     print("✅ 2 EOF_MARKERs detected.")
                     break
         except FileNotFoundError:
