@@ -276,16 +276,6 @@ def extract_valid_transmission(input_file: str, output_file: str, master_file: s
 if __name__ == "__main__":
     node = AirNode("Node1")
     node.return_to_idle()
-    def process_command(self, command, identifier, source):
-        """Processes commands and includes the source information."""
-        if identifier == self.identifier:
-            if command == "Master":
-                self.set_state('master')
-            elif command == "Slave":
-                self.set_state('slave')
-            else:
-                self.set_state('idle')
-        else:
-            print(f"Command for another node: {identifier}. Ignored.")
+    
 
  
