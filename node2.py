@@ -251,12 +251,38 @@ class AirNode:
             print(f"Command for another node: {identifier}. Ignored.")
             
             
+#def extract_valid_transmission(input_file: str, output_file: str, master_file: str, pad_char: str = 'A', min_pad_length: int = 10):
+    """
+    Extracts the middle transmission from a padded file, removes EOF_MARKERs from it,
+    appends the master file contents, and then appends a final EOF_MARKER at the end.
+    """
+ #   with open(input_file, 'r') as f:
+  #      content = f.read()
+
+  #  segments = content.split(pad_char * min_pad_length)
+   # cleaned_segments = [s.strip() for s in segments if s.strip()]
+
+    #if len(cleaned_segments) < 3:
+     #   raise ValueError("Expected at least three transmissions (padded start, middle, end).")
+
+    #middle_transmission = cleaned_segments[1].replace("EOF_MARKER", "").strip()
+
+    #with open(master_file, 'r') as f_master_read:
+     #   master_content = f_master_read.read()
+
+    #with open(output_file, 'w') as f_out:
+     #   f_out.write(middle_transmission)
+      #  f_out.write("\n")
+       # f_out.write(master_content)
+        #f_out.write("\nEOF_MARKER\n")
+
 def extract_valid_transmission(input_file: str, output_file: str, master_file: str, pad_char: str = 'A', min_pad_length: int = 10):
     """
     Extracts the middle transmission from a padded file, removes EOF_MARKERs from it,
     appends the master file contents, and then appends a final EOF_MARKER at the end.
     """
-    with open(input_file, 'r') as f:
+    # Read the input file while ignoring corrupted characters
+    with open(input_file, 'r', errors='ignore') as f:
         content = f.read()
 
     segments = content.split(pad_char * min_pad_length)
@@ -267,9 +293,11 @@ def extract_valid_transmission(input_file: str, output_file: str, master_file: s
 
     middle_transmission = cleaned_segments[1].replace("EOF_MARKER", "").strip()
 
-    with open(master_file, 'r') as f_master_read:
+    # Read the master file while ignoring corrupted characters
+    with open(master_file, 'r', errors='ignore') as f_master_read:
         master_content = f_master_read.read()
 
+    # Write the cleaned output
     with open(output_file, 'w') as f_out:
         f_out.write(middle_transmission)
         f_out.write("\n")
