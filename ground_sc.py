@@ -41,10 +41,14 @@ def wait_for_eof_markers(file_path="out.txt"):
         time.sleep(0.5)
 
 def extract_middle_segment(input_file: str, output_file: str, pad_char='A', pad_len=10):
-    with open(input_file, 'r') as f:
-        parts = [s.strip() for s in f.read().split(pad_char * pad_len) if s.strip()]
+    with open(input_file, 'rb') as f:
+        content = f.read()
+
+    decoded = content.decode('ascii', errors='ignore')
+    parts = [s.strip() for s in decoded.split(pad_char * pad_len) if s.strip()]
     if len(parts) < 3:
         raise ValueError("Expected at least 3 padded sections in the file.")
+
     with open(output_file, 'w') as f:
         f.write(parts[1])
     print(f"📁 Extracted segment saved to {output_file}")
@@ -58,6 +62,9 @@ def send_ack():
     print("✅ ACK sent.")
 
 def receive_slave_data(rx_script: str, master: str, slave: str):
+    open("out.txt", "w").close()
+    print("🧹 Cleared out.txt before recieving data.")
+    
     print(f"🔻 Receiving from {master} → {slave}...")
     rx_proc = subprocess.Popen(["python3", rx_script])
     wait_for_eof_markers()
@@ -66,6 +73,9 @@ def receive_slave_data(rx_script: str, master: str, slave: str):
     output_file = f"{master}{slave}.txt"
     extract_middle_segment("out.txt", output_file)
     send_ack()
+    
+    open("out.txt", "w").close()
+    print("🧹 Cleared out.txt after saving data.")
 
 def main():
     for master in nodes:
@@ -85,9 +95,13 @@ def main():
 
         slave_targets = [n for n in nodes if n != master]
         for slave in slave_targets:
+            time.sleep(35)
             receive_slave_data("BPSK_RX_DATA_GROUND.py", master, slave)
 
     print("\n🎉 All Master cycles completed successfully.")
 
 if __name__ == "__main__":
+    # Clear out.txt at startup
+    open("out.txt", "w").close()
+    print("🧹 Cleared out.txt at startup.")
     main()
