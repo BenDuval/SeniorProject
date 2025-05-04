@@ -57,7 +57,7 @@ class AirNode:
             self.become_slave()
 
     def become_master(self):
-        subprocess.Popen(["python3", "ack_tx.py"]).wait()
+        subprocess.Popen(["python3", "ack_tx.py"])
 
         target_nodes = ["Node2", "Node3"]
         for node in target_nodes:
@@ -152,10 +152,15 @@ class AirNode:
         self.return_to_idle()
 
     def become_slave(self):
-        subprocess.Popen(["python3", "ack_tx.py"]).wait()
+        ack_process = subprocess.Popen(["python3", "ack_tx.py"])
+        print("Sending ack to Master")
+        time.sleep(8)
+        ack_process.terminate()
+        ack_process.wait()
+        print("Ack terminated.")
 
-        slave_process = subprocess.Popen(["python3", "slavemode.py"])
-        slave_process.wait()
+        slave_process = subprocess.run(["python3", "slavemode.py"])
+        #slave_process.wait()
         time.sleep(5)
 
         source = self.last_source
