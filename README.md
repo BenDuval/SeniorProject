@@ -83,10 +83,12 @@ Each node already has a dedicated script in the repository:
 
 There is no need to rename any files — simply run the correct script on each respective device.
 
-Then run the script for node1 like this:   
+Then run the scripts like this:   
 
 ```bash
 python3 node1.py
+python3 node2.py
+python3 node3.py   
 ```
 Make sure the identifier inside the script matches the role. You’ll find it near the bottom of each node script:   
 ```bash
