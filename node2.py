@@ -117,7 +117,7 @@ class AirNode:
 
             extract_valid_transmission(
                 input_file="out.txt",
-                output_file=f"{self.identifier}{node}.txt",
+                output_file="Data.txt",
                 master_file="two_tone_master_data.txt"
             )
             print(f"Saved cleaned transmission to {self.identifier}{node}.txt")
