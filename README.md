@@ -114,9 +114,39 @@ The system uses three types of nodes:
 Each node communicates using RF at 433 MHz (TX) and 433 MHz (RX), and coordination is handled using ACKs and ZMQ signaling between scripts.
 
 
-## 🚀 Full System Operation (Coming Soon)
+### 🚀 Full System Operation   
 
-Once all nodes are running and idle, Ground can initiate the first Master assignment using BPSK. This begins the round of master-slave interactions and data collection. See `become_master()` in the source for details.
+This project coordinates communication between a ground station and three airborne nodes (Node1, Node2, Node3) using BPSK and dual-tone signaling. The system cycles through each node as a master, completing all pairwise interactions.   
+
+#### 🛰️ 1. Ground Station Initialization   
+- Ground sends a `Master` command via BPSK (TX @ 433 MHz) to one of the nodes.
+- It then listens for an ACK (Continous Wave Signal at 435 MHz) response.   
+
+#### 👑 2. Node Enters Master Mode   
+- The designated node becomes the master.   
+- It sends a `Slave` command to the other two nodes. (One at a time)   
+- Awaits ACKs.
+- It then runs `master_mode.py` to send the two tone to slave.   
+
+#### 🧠 3. Slaves Respond & Run Two-Tone Flowgraph   
+- Each slave node acknowledges the command.   
+- It enters `slave_mode.py`, enabling a two-tone transceiver.   
+- The slave listens for a two-tone signal and retransmits it upon detection.   
+
+#### 🎯 4. Master Receives Two-Tone Signals   
+- It captures each slave’s retransmission to estimate local oscillator offsets.   
+
+#### 📤 5. Master Sends Data to Ground
+- After processing, the master sends its results to the ground station via BPSK.
+- Data is saved in files like `Data.txt`.   
+
+#### 🔁 6. Cycle Continues   
+- Ground assigns the next node to be master.   
+- Steps repeat until all nodes have taken turns as master and completed all 6 pairwise interactions:   
+  - Node1 → Node2, Node1 → Node3   
+  - Node2 → Node1, Node2 → Node3   
+  - Node3 → Node1, Node3 → Node2   
+
 
 For academic use only. Developed by Ben Duval & Esteban Perez.   
 Contact: ben.duval@ymail.com      
