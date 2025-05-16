@@ -124,8 +124,8 @@ This project coordinates communication between a ground station and three airbor
 
 #### 👑 2. Node Enters Master Mode   
 - The designated node becomes the master.   
-- It sends a `Slave` command to the other two nodes. (One at a time)   
-- Awaits ACKs.
+- It sends a `Slave` command to the other two nodes (One at a time) using BPSK_TX_NodeX where X is the slave its trying to communicate with.      
+- Awaits ACKs, once recieved it closes the TX and opens BPSK_RX_NodeX, where X is the node that is currently Master.   
 - It then runs `master_mode.py` to send the two tone to slave.   
 
 #### 🧠 3. Slaves Respond & Run Two-Tone Flowgraph   
