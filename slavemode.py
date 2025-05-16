@@ -50,6 +50,7 @@ try:
 
             if detect_signal == "0" and detected:
                 print("Two-tone no longer detected. Stopping data collection.")
+                time.sleep(10)
                 break
 
         if detected and data_socket in socks and socks[data_socket] == zmq.POLLIN:
