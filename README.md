@@ -111,7 +111,7 @@ The system uses three types of nodes:
 - **Master**: Sends commands and performs two-tone offset measurements.
 - **Slave**: Echoes dual-tone signals and confirms participation.
 
-Each node communicates using RF at XXX MHz (TX) and XXX MHz (RX), and coordination is handled using ZMQ signaling between scripts.
+Each node communicates using RF at 433 MHz (TX) and 433 MHz (RX), and coordination is handled using ZMQ signaling between scripts.
 
 
 ## 🚀 Full System Operation (Coming Soon)
