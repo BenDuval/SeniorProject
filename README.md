@@ -73,21 +73,16 @@ You should see an output indicating that the LimeSDR was detected. If not, check
 ```bash
 cd ~/Documents/Senior\ Project/Communication\ Protocol/SeniorProject
 ```
-### 🖥️ Node Script Naming   
+### 🖥️ Node Script Naming
 
-Rename `nodeG.py` to match the node device it will be running on. This helps organize roles clearly during testing and deployment.   
+Each node already has a dedicated script in the repository:
 
-For example:   
+- `node1.py` — for the device acting as Node1  
+- `node2.py` — for the device acting as Node2  
+- `node3.py` — for the device acting as Node3  
 
-```bash
-# On the device acting as Node1
-mv nodeG.py node1.py
+There is no need to rename any files — simply run the correct script on each respective device.
 
-# On Node2's device
-mv nodeG.py node2.py
-
-# And so on for Node3
-```
 Then run the script like this:   
 
 ```bash
