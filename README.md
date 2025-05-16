@@ -18,7 +18,7 @@ The system runs on Raspberry Pis each connected to a LimeSDR, and leverages GNU 
 - *[Add more software dependencies here]*
 
 ### 🔩 Hardware
-- 4x Raspberry Pi 4 (or better)
+- 4x Raspberry Pi 5   
 - 4x LimeSDR Mini 2.0
 - 4x External Power Bank
 - 4x USB-C cables, 4x USB-A male to USB-A female   
