@@ -83,7 +83,7 @@ Each node already has a dedicated script in the repository:
 
 There is no need to rename any files — simply run the correct script on each respective device.
 
-Then run the script like this:   
+Then run the script for node1 like this:   
 
 ```bash
 python3 node1.py
