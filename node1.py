@@ -5,7 +5,6 @@ import difflib
 import time
 from set_command import set_command
 from extract_command import extract_command
-# from extract_valid_command_from_file_stream import extract_valid_command_from_file_stream
 
 
 class AirNode:
@@ -62,113 +61,7 @@ class AirNode:
         elif new_state == 'slave':
             self.become_slave()
 
-    #def become_master(self):
-        """Handles Master node setup and starts transmission."""
-    #    ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-    #    time.sleep(3)
-     #   ack_process.terminate()
-     #   air_nodes = ["Node1", "Node2", "Node3"]  # All known nodes
-     #   for node in air_nodes:
-      #      if node == self.identifier:
-      #          continue  # Skip itself
-      #      set_command(node, "Slave", self.identifier)
-      #      print(f"Generated Slave command for {node} from {self.identifier}")
-       #     tx_process = subprocess.Popen(["python3", "BPSK_TX_Node2.py"])
-      #      print("BPSK TX started. Listening for ACK...")
-      #      time.sleep(5)
 
-       #     context = zmq.Context()
-       #     socket = context.socket(zmq.SUB)
-       #     socket.connect("tcp://localhost:4010")
-       #     socket.setsockopt_string(zmq.SUBSCRIBE, "")
-       #     socket.RCVTIMEO = 100  # 100 ms timeout
-
-       #     ack_received = False
-        #    last_print = time.time()
-      #      while not ack_received:
-        #        try:
-        #            msg = socket.recv_string(flags=zmq.NOBLOCK)
-        #            if msg.strip() == "1":
-        #                print("Ack received")
-         #               ack_received = True
-         #       except zmq.Again:
-         #           time.sleep(0.01)
-          #          if time.time() - last_print > 1:
-          #              print("No ACK yet...")
-         #               last_print = time.time()
-
-          #  tx_process.terminate()
-          #  print("BPSK TX terminated.")
-          #  print("master mode up next")
-         #   master_process = subprocess.run(["python3", "master_mode.py"])
-         #   time.sleep(2)
-
-         #   print("Restarting BPSK_RX for EOF monitoring.")
-         #   self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node1.py"])
-         #   time.sleep(2)
-
-          #  print("Monitoring out.txt for EOF_MARKER...")
-         #   eof_count = 0
-         #   while eof_count < 2:
-          #      try:
-          #          with open("out.txt", "rb") as f:
-          #              text = f.read()
-           #             eof_count = text.count(b"EOF_MARKER")
-           #             print(f"Current EOF_MARKER count : {eof_count}")
-           #     except FileNotFoundError:
-            #        eof_count = 0
-           #     time.sleep(1)
-
-           # print("2 EOF_MARKERs found. Terminating BPSK_RX_Node1.")
-           # if self.bpsk_rx_process and self.bpsk_rx_process.poll() is None:
-           #     self.bpsk_rx_process.terminate()
-            #    self.bpsk_rx_process = None
-
-           # time.sleep(2)
-           # ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-           # time.sleep(5)
-           # ack_process.terminate()
-
-           # print("Extracting valid data from out.txt...")
-          #  extract_valid_transmission(
-          #      input_file="out.txt",
-           #     output_file=f"{self.identifier}{node}.txt",
-           #     master_file="two_tone_master_data.txt"
-          #  )
-          #  print(f"Saved cleaned transmission to {self.identifier}{node}.txt")
-          #  time.sleep(3)
-
-           # print(f"Transmitting {self.identifier}{node}.txt to the ground...")
-          #  tx_data_process = subprocess.Popen(["python3", "BPSK_TX_DATA_GROUND.py"])
-          #  print("BPSK_TX_DATA_GROUND flowgraph started. Waiting for ACK...")
-
-           # context = zmq.Context()
-           # ack_socket = context.socket(zmq.SUB)
-           # ack_socket.connect("tcp://localhost:4010")
-           # ack_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-          #  ack_socket.RCVTIMEO = 100
-
-           # ack_received = False
-           # last_print = time.time()
-           # while not ack_received:
-            #    try:
-            #        msg = ack_socket.recv_string(flags=zmq.NOBLOCK)
-             #       if msg.strip() == "1":
-             #           print("Ground ACK received!")
-             #           ack_received = True
-              #  except zmq.Again:
-              #      time.sleep(0.01)
-              #      if time.time() - last_print > 1:
-              #          print("No ACK yet from ground...")
-               #         last_print = time.time()
-
-           # tx_data_process.terminate()
-           # print("BPSK_TX_DATA_GROUND flowgraph terminated.")
-
-           # print("Returning to idle state.")
-            #self.return_to_idle()
-            
-    
 
     def become_master(self):
         """Handles Master node setup and starts transmission."""
@@ -243,7 +136,7 @@ class AirNode:
             print("Extracting valid data from out.txt...")
             extract_valid_transmission(
                 input_file="out.txt",
-                output_file=f"{self.identifier}{node}.txt",
+                output_file="Data.txt",
                 master_file="two_tone_master_data.txt"
             )
             print(f"Saved cleaned transmission to {self.identifier}{node}.txt")
