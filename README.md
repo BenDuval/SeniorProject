@@ -73,6 +73,13 @@ You should see an output indicating that the LimeSDR was detected. If not, check
 ```bash
 cd ~/Documents/Senior\ Project/Communication\ Protocol/SeniorProject
 ```
+
+> ⚠️ After cloning the repository, you will only see `.grc` flowgraph files.     
+> To use them in the Python scripts, you must manually open each `.grc` file in GNU Radio Companion and generate the corresponding `.py` file by clicking **Run → Execute**.     
+> These `.py` files are required for node communication and must exist before running any node scripts.   
+
+
+
 ### 🖥️ Node Script Naming
 
 Each node already has a dedicated script in the repository:
