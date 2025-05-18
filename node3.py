@@ -1,8 +1,8 @@
-import time
 import subprocess
 import zmq
 import os
 import difflib
+import time
 from set_command import set_command
 from extract_command import extract_command
 
@@ -15,21 +15,24 @@ class AirNode:
     def return_to_idle(self):
         self.state = 'idle'
         print("State changed to: idle")
-        
+
         # Step 1: Clear command.txt or reset it
         try:
             with open("command.txt", "w") as f:
                 f.write("")
             print("command.txt cleared.")
+            with open("out.txt", "w") as f:
+                f.write("")
+            print("out.txt cleared.")            
         except Exception as e:
-            print(f"Error clearing command.txt: {e}")        
-        
+            print(f"Error clearing command.txt: {e}")
+
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
-         self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node3.py"])
-        print("started bpsk rx")
+            self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node3.py"])
+        print("started BPSK_RX_Node3")
         time.sleep(4)
-        
+
         input_file_path = 'out.txt'
         output_file_path = 'command.txt'
 
@@ -37,7 +40,7 @@ class AirNode:
         while self.state == 'idle':
             extract_command(input_file_path, output_file_path)
             command, identifier, source = self.read_command_from_file()
-            
+
             if command and identifier and source and identifier == self.identifier:
                 print("Command found in idle. Exiting idle and processing.")
                 self.process_command(command, identifier, source)
@@ -49,24 +52,30 @@ class AirNode:
         if self.bpsk_rx_process and self.bpsk_rx_process.poll() is None:
             print("Terminating BPSK RX before switching state.")
             self.bpsk_rx_process.terminate()
+            self.bpsk_rx_process.wait()
             self.bpsk_rx_process = None
+         
+            time.sleep(2)
+            
         self.state = new_state
         print(f"State changed to: {self.state}")
         if new_state == 'master':
             self.become_master()
         elif new_state == 'slave':
             self.become_slave()
-            
-    
+
             
     def become_master(self):
         """Handles Master node setup and starts transmission."""
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-        time.sleep(3)
+        print("[Master] Sending initial ACK to Ground...")
+        time.sleep(10)
         ack_process.terminate()
 
         target_nodes = ["Node2", "Node3"]
         for node in target_nodes:
+            with open("out.txt", "w") as f:
+                f.write("")
             set_command(node, "Slave", self.identifier)
             print(f"Generated Slave command for {node} from {self.identifier}")
 
@@ -101,10 +110,11 @@ class AirNode:
 
             print("master mode up next")
             subprocess.run(["python3", "master_mode.py"])
-            time.sleep(2)
+            print("Running master mode")
+            time.sleep(5)
 
-            print("Restarting BPSK_RX for EOF monitoring.")
-            self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node1.py"])
+            print("Restarting BPSK_RX_Node1 for EOF monitoring.")
+            self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node3.py"])
             time.sleep(2)
 
             print("Monitoring out.txt for EOF_MARKER...")
@@ -121,8 +131,8 @@ class AirNode:
 
             print("2 EOF_MARKERs found. Terminating BPSK_RX_Node1.")
             if self.bpsk_rx_process and self.bpsk_rx_process.poll() is None:
-                 self.bpsk_rx_process.terminate()
-                 self.bpsk_rx_process = None
+                self.bpsk_rx_process.terminate()
+                self.bpsk_rx_process = None
 
             time.sleep(2)
             ack_process = subprocess.Popen(["python3", "ack_tx.py"])
@@ -132,13 +142,13 @@ class AirNode:
             print("Extracting valid data from out.txt...")
             extract_valid_transmission(
                 input_file="out.txt",
-                output_file="Data.txt",
+                output_file=f"Data.txt",
                 master_file="two_tone_master_data.txt"
             )
-            print(f"Saved cleaned transmission to {self.identifier}{node}.txt")
+            print(f"Saved cleaned transmission to Data.txt")
             time.sleep(3)
 
-            print(f"Transmitting {self.identifier}{node}.txt to the ground...")
+            print(f"Transmitting Data.txt to the ground...")
             tx_data_process = subprocess.Popen(["python3", "BPSK_TX_DATA_GROUND.py"])
             print("BPSK_TX_DATA_GROUND flowgraph started. Waiting for ACK...")
 
@@ -167,7 +177,6 @@ class AirNode:
         print("Returning to idle state.")
         self.return_to_idle()
 
-    
     def become_slave(self):
         """Handles Slave node setup."""
         time.sleep(0.3)
@@ -179,21 +188,17 @@ class AirNode:
         ack_process.terminate()
         time.sleep(0.3)
 
-        # Step 2: Start RX flowgraph for *self* using identifier
-        rx_script = f"BPSK_RX_{self.identifier}.py"
-        print(f"Starting RX flowgraph: {rx_script}")
-        self.bpsk_rx_process = subprocess.Popen(["python3", rx_script])
-        time.sleep(2)
+        
 
-        # Step 3: Start slavemode
+        # Step 2: Start slavemode
         slave_process = subprocess.Popen(["python3", "slavemode.py"])
         slave_process.wait()
         time.sleep(5)
 
-        # Step 4: Transmit using TX flowgraph based on source (sender)
+        # Step 3: Transmit using TX flowgraph based on source (sender)
         _, _, source = self.read_command_from_file()
         if source:
-            tx_script = f"BPSK_TX_{source}.py"
+            tx_script = f"BPSK_TX_DATA_{source}.py"
             print(f"Transmitting back using TX flowgraph: {tx_script}")
             tx_process = subprocess.Popen(["python3", tx_script])
         else:
@@ -201,7 +206,7 @@ class AirNode:
             self.return_to_idle()
             return
 
-        # Step 5: Listen for ACK
+        # Step 4: Listen for ACK
         print("Slave transmission complete. Listening for ACK from master...")
         context = zmq.Context()
         socket = context.socket(zmq.SUB)
@@ -225,16 +230,11 @@ class AirNode:
 
         tx_process.terminate()
 
-        # Step 6: Terminate RX process
-        if self.bpsk_rx_process and self.bpsk_rx_process.poll() is None:
-            print(f"Terminating RX flowgraph: {rx_script}")
-            self.bpsk_rx_process.terminate()
-            self.bpsk_rx_process = None
+      
 
-        # Step 7: Return to idle
+        # Step 5: Return to idle
         self.return_to_idle()
-
-  
+    
 
     def fuzzy_match(self, word, valid_set, cutoff=0.7):
         """Returns closest match in valid_set if above cutoff score."""
@@ -247,7 +247,6 @@ class AirNode:
         try:
             with open(path, 'r') as file:
                 lines = [line.strip() for line in file if line.strip()]
-        
             if len(lines) < 3:
                 return None, None, None
 
@@ -255,16 +254,12 @@ class AirNode:
             raw_command = lines[1]
             source = lines[2]
 
-            # Fuzzy match command
             command = self.fuzzy_match(raw_command, VALID_COMMANDS)
             if not command:
-                return None, None, None  # Could not confidently parse command
+                return None, None, None
             return command, identifier, source
         except FileNotFoundError:
             return None, None, None
-
-
-
 
     def process_command(self, command, identifier, source):
         """Processes commands and includes the source information."""
@@ -277,9 +272,8 @@ class AirNode:
                 self.set_state('idle')
         else:
             print(f"Command for another node: {identifier}. Ignored.")
-            
-            
 
+       
 def extract_valid_transmission(input_file: str, output_file: str, master_file: str, pad_char: str = 'A', min_pad_length: int = 10):
     """
     Extracts the middle transmission from a padded file, removes EOF_MARKERs from it,
@@ -309,6 +303,12 @@ def extract_valid_transmission(input_file: str, output_file: str, master_file: s
         f_out.write("\nEOF_MARKER\n")
 
 
+# === Start Node ===
+
 if __name__ == "__main__":
     node = AirNode("Node3")
-    node.return_to_idle()  # Start in IDLE State
+    node.return_to_idle()
+    
+
+ 
+
