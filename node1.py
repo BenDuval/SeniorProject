@@ -6,7 +6,6 @@ import time
 from set_command import set_command
 from extract_command import extract_command
 
-
 class AirNode:
     def __init__(self, identifier):
         self.identifier = identifier
@@ -18,12 +17,15 @@ class AirNode:
         print("State changed to: idle")
 
         # Step 1: Clear command.txt or reset it
-        #try:
-           # with open("command.txt", "w") as f:
-            #    f.write("")
-           # print("command.txt cleared.")
-        #except Exception as e:
-            #print(f"Error clearing command.txt: {e}")
+        try:
+            with open("command.txt", "w") as f:
+                f.write("")
+            print("command.txt cleared.")
+            with open("out.txt", "w") as f:
+                f.write("")
+            print("out.txt cleared.")            
+        except Exception as e:
+            print(f"Error clearing command.txt: {e}")
 
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
@@ -50,9 +52,10 @@ class AirNode:
         if self.bpsk_rx_process and self.bpsk_rx_process.poll() is None:
             print("Terminating BPSK RX before switching state.")
             self.bpsk_rx_process.terminate()
+            self.bpsk_rx_process.wait()
             self.bpsk_rx_process = None
          
-            time.sleep(5)
+            time.sleep(2)
             
         self.state = new_state
         print(f"State changed to: {self.state}")
@@ -61,16 +64,18 @@ class AirNode:
         elif new_state == 'slave':
             self.become_slave()
 
-
-
+            
     def become_master(self):
         """Handles Master node setup and starts transmission."""
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-        time.sleep(3)
+        print("[Master] Sending initial ACK to Ground...")
+        time.sleep(10)
         ack_process.terminate()
 
         target_nodes = ["Node2", "Node3"]
         for node in target_nodes:
+            with open("out.txt", "w") as f:
+                f.write("")
             set_command(node, "Slave", self.identifier)
             print(f"Generated Slave command for {node} from {self.identifier}")
 
@@ -105,9 +110,10 @@ class AirNode:
 
             print("master mode up next")
             subprocess.run(["python3", "master_mode.py"])
-            time.sleep(2)
+            print("Running master mode")
+            time.sleep(5)
 
-            print("Restarting BPSK_RX for EOF monitoring.")
+            print("Restarting BPSK_RX_Node1 for EOF monitoring.")
             self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node1.py"])
             time.sleep(2)
 
@@ -136,13 +142,13 @@ class AirNode:
             print("Extracting valid data from out.txt...")
             extract_valid_transmission(
                 input_file="out.txt",
-                output_file="Data.txt",
+                output_file=f"Data.txt",
                 master_file="two_tone_master_data.txt"
             )
-            print(f"Saved cleaned transmission to {self.identifier}{node}.txt")
+            print(f"Saved cleaned transmission to Data.txt")
             time.sleep(3)
 
-            print(f"Transmitting {self.identifier}{node}.txt to the ground...")
+            print(f"Transmitting Data.txt to the ground...")
             tx_data_process = subprocess.Popen(["python3", "BPSK_TX_DATA_GROUND.py"])
             print("BPSK_TX_DATA_GROUND flowgraph started. Waiting for ACK...")
 
@@ -170,45 +176,65 @@ class AirNode:
 
         print("Returning to idle state.")
         self.return_to_idle()
-        
+
     def become_slave(self):
         """Handles Slave node setup."""
-        time.sleep(.3)
-        # Step 1: Send ack to master 
+        time.sleep(0.3)
+
+        # Step 1: Send ACK to master
         print(f"{self.identifier} is now a Slave. Sending ACK...")
         ack_process = subprocess.Popen(["python3", "ack_tx.py"])
-        time.sleep(5) # wait 20 seconds
-        ack_process.terminate()
-        time.sleep(.3)
-        # Step 2: Start slavemode.py
-        slave_process = subprocess.Popen(["python3", "slavemode.py"])  
-        slave_process.wait()  # Properly terminate the slave_process
         time.sleep(5)
+        ack_process.terminate()
+        time.sleep(0.3)
+
         
-        # Step 3: Transmit using BPSK_TX
-        tx_process = subprocess.Popen(["python3", "BPSK_TX_DATA.py"])
-        print("Slave data transmitted to master. Listening for ACK")
+
+        # Step 2: Start slavemode
+        slave_process = subprocess.Popen(["python3", "slavemode.py"])
+        slave_process.wait()
+        time.sleep(5)
+
+        # Step 3: Transmit using TX flowgraph based on source (sender)
+        _, _, source = self.read_command_from_file()
+        if source:
+            tx_script = f"BPSK_TX_DATA_{source}.py"
+            print(f"Transmitting back using TX flowgraph: {tx_script}")
+            tx_process = subprocess.Popen(["python3", tx_script])
+        else:
+            print("Sender not found in command file. Cannot launch TX flowgraph.")
+            self.return_to_idle()
+            return
+
+        # Step 4: Listen for ACK
+        print("Slave transmission complete. Listening for ACK from master...")
         context = zmq.Context()
         socket = context.socket(zmq.SUB)
         socket.connect("tcp://localhost:4010")
         socket.setsockopt_string(zmq.SUBSCRIBE, "")
-        socket.RCVTIMEO = 100  # 100 ms timeout
+        socket.RCVTIMEO = 100
+
         ack_received = False
         last_print = time.time()
         while not ack_received:
             try:
                 msg = socket.recv_string(flags=zmq.NOBLOCK)
                 if msg.strip() == "1":
-                    print("Ack received")
+                    print("ACK received from master.")
                     ack_received = True
             except zmq.Again:
-                time.sleep(0.01)  # now this actually executes
+                time.sleep(0.01)
                 if time.time() - last_print > 1:
                     print("No ACK yet...")
                     last_print = time.time()
-            
+
         tx_process.terminate()
+
+      
+
+        # Step 5: Return to idle
         self.return_to_idle()
+    
 
     def fuzzy_match(self, word, valid_set, cutoff=0.7):
         """Returns closest match in valid_set if above cutoff score."""
@@ -247,7 +273,6 @@ class AirNode:
         else:
             print(f"Command for another node: {identifier}. Ignored.")
 
-
        
 def extract_valid_transmission(input_file: str, output_file: str, master_file: str, pad_char: str = 'A', min_pad_length: int = 10):
     """
@@ -284,5 +309,7 @@ if __name__ == "__main__":
     node = AirNode("Node1")
     node.return_to_idle()
     
+
+ 
 
  
