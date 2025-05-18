@@ -30,7 +30,7 @@ class AirNode:
         # Step 2: Start RX  
         if self.bpsk_rx_process is None or self.bpsk_rx_process.poll() is not None:
             self.bpsk_rx_process = subprocess.Popen(["python3", "BPSK_RX_Node1.py"])
-        print("started bpsk rx")
+        print("started BPSK_RX_Node1")
         time.sleep(4)
 
         input_file_path = 'out.txt'
