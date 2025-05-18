@@ -21,7 +21,7 @@ def trim_text_file(input_file, x, y):
 
 
 # ---- Paths to Flowgraph ----
-flowgraph_path = "/home/ubuntu/Documents/Senior Project/Communication Protocol/SeniorProject/TwoToneTransciever.py"
+flowgraph_path = "TwoToneTransciever.py"
 
 # ---- Start the GRC Flowgraph ----
 first_process = subprocess.Popen(['python3', flowgraph_path])
